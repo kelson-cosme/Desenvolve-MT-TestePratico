@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+// 1. Importar o 'useNavigate' em vez do 'Link'
+import { useParams, useNavigate } from 'react-router-dom';
 import apiClient from '../api/axios.config';
 import InformationForm from '../components/InformationForm';
 import { formatDate } from '../utils/dateFormatter';
 import InformationLog, { type LogInfo } from '../components/InformationLog';
 
+// ... (Interface PersonDetails continua a mesma)
 interface PersonDetails {
   id: number;
   nome: string;
@@ -21,15 +23,19 @@ interface PersonDetails {
   };
 }
 
+
 const DetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  // 2. Criar a função de navegação
+  const navigate = useNavigate();
   const [person, setPerson] = useState<PersonDetails | null>(null);
   const [informationLogs, setInformationLogs] = useState<LogInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
-  useEffect(() => {
+  // ... (useEffect e outras lógicas continuam as mesmas)
+    useEffect(() => {
     const fetchDetailsAndLogs = async () => {
       try {
         setLoading(true);
@@ -38,14 +44,11 @@ const DetailsPage: React.FC = () => {
         
         const ocorrenciaId = personResponse.data.ultimaOcorrencia.ocoId;
         if (ocorrenciaId) {
-          // --- INÍCIO DA CORREÇÃO ---
-          // Usando o formato de query param que você descobriu
           const logsResponse = await apiClient.get<LogInfo[]>(`/ocorrencias/informacoes-desaparecido`, {
             params: {
               ocorrenciaId: ocorrenciaId
             }
           });
-          // --- FIM DA CORREÇÃO ---
           setInformationLogs(logsResponse.data);
         }
 
@@ -70,10 +73,16 @@ const DetailsPage: React.FC = () => {
   const statusClasses = 'bg-red-500 text-white font-bold py-1 px-3 rounded';
   const vestimentas = person.ultimaOcorrencia?.ocorrenciaEntrevDesapDTO?.vestimentasDesaparecido;
 
+
   return (
     <>
       <div className="container mx-auto p-4 max-w-4xl">
-        <Link to="/" className="text-blue-400 hover:underline mb-6 inline-block">&larr; Voltar para a lista</Link>
+        {/* 3. Substituir o <Link> por um <button> que usa navigate(-1) */}
+        <button onClick={() => navigate(-1)} className="text-blue-400 hover:underline mb-6 inline-block">
+          &larr; Voltar para a lista
+        </button>
+
+        {/* O resto do JSX continua o mesmo... */}
         <div className="bg-gray-800 shadow-xl rounded-lg overflow-hidden md:flex mb-8">
            <img className="md:w-1/3 w-full h-auto object-cover" src={person.urlFoto} alt={person.nome} />
           <div className="p-6 md:w-2/3">

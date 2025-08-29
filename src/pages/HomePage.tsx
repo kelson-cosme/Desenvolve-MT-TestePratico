@@ -1,40 +1,35 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom'; // 1. Importar useSearchParams
 import apiClient from '../api/axios.config';
 import PersonCard from '../components/PersonCard';
 import Pagination from '../components/Pagination';
 import SearchBar from '../components/SearchBar';
-
-export interface Person {
-  id: number;
-  nome: string;
-  urlFoto: string;
-  idade: number;
-  ultimaOcorrencia: {
-    dtDesaparecimento: string;
-    localDesaparecimentoConcat: string;
-  };
-}
+import { type Person } from '@/types/person';
 
 interface PaginatedResponse {
   content: Person[];
   totalPages: number;
 }
 
-
 const HomePage: React.FC = () => {
   const [people, setPeople] = useState<Person[]>([]);
-  const [currentPage, setCurrentPage] = useState(1); // API agora espera base 1 para 'pagina'
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [submittedSearch, setSubmittedSearch] = useState('');
+  
+  // 2. Usar useSearchParams para controlar o estado da página e da busca
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Lemos os valores da URL ou usamos um valor padrão
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+  const submittedSearch = searchParams.get('nome') || '';
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     
     const params = {
       nome: submittedSearch,
-      pagina: currentPage - 1, 
+      pagina: currentPage - 1, // API espera base 0
       porPagina: 10,
       faixaIdadeInicial: 0,
       faixaIdadeFinal: 120
@@ -58,16 +53,23 @@ const HomePage: React.FC = () => {
   }, [fetchData]);
 
   const handleSearchSubmit = () => {
-    setCurrentPage(1); 
-    setSubmittedSearch(searchTerm);
+    // 3. Ao buscar, atualizamos a URL. Isso dispara a refetch.
+    setSearchParams({ nome: searchTerm, page: '1' });
   };
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    // 4. Ao mudar de página, atualizamos a URL.
+    setSearchParams({ nome: submittedSearch, page: page.toString() });
   };
+  
+  // Sincroniza o input com o termo de busca na URL
+  useEffect(() => {
+    setSearchTerm(submittedSearch);
+  }, [submittedSearch]);
+
 
   return (
-    <div className="container mx-auto p-4 sm:p-6 lg:p-8"> 
+    <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <SearchBar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -84,7 +86,6 @@ const HomePage: React.FC = () => {
             ) : (
               <div className="col-span-full text-center py-10 bg-gray-800 rounded-lg">
                 <p className="text-lg text-gray-400">Nenhum resultado encontrado para "{submittedSearch}".</p>
-                <p className="text-sm text-gray-500 mt-2">Tente buscar por outro nome ou limpe a busca.</p>
               </div>
             )}
           </div>
