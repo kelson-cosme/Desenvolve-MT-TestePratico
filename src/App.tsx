@@ -1,11 +1,11 @@
 import { AppRouter } from './routes';
+import MainLayout from './layouts/MainLayout'; // Importe o layout
 
 function App() {
   return (
-    <div>
-      {/* Aqui pode entrar um Layout geral com Navbar, etc. */}
+    <MainLayout>
       <AppRouter />
-    </div>
+    </MainLayout>
   );
 }
 
