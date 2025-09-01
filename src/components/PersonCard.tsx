@@ -26,7 +26,7 @@ const PersonCard: React.FC<PersonCardProps> = ({ person }) => {
   return (
     <Link 
       to={`/person/${person.id}`} 
-      className="group flex flex-col bg-gray-800 border border-gray-700 rounded-lg overflow-hidden shadow-lg hover:shadow-cyan-500/20 hover:border-cyan-500 transition-all duration-300"
+      className="group flex flex-col bg-[#333333] border-gray-700 rounded-lg overflow-hidden shadow-lg hover:shadow-cyan-500/20 hover:border-cyan-500 transition-all duration-300"
     >
       <div className="overflow-hidden">
         <img 
@@ -38,12 +38,12 @@ const PersonCard: React.FC<PersonCardProps> = ({ person }) => {
       </div>
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="text-lg font-bold text-white mb-2 truncate">{person.nome}</h3>
-        <p className="text-gray-400 text-sm mb-3">{person.idade} anos</p>
-        <p className="text-gray-400 text-sm mb-4">
+        <p className="text-gray-300 text-sm mb-3">{person.idade} anos</p>
+        <p className="text-gray-300 text-sm mb-4">
           Visto por último em: {local}
         </p>
         
-        <p className="text-gray-400 text-sm">Em: {formatDate(person.ultimaOcorrencia?.dtDesaparecimento)}</p>
+        <p className="text-gray-300 text-sm">Em: {formatDate(person.ultimaOcorrencia?.dtDesaparecimento)}</p>
 
         <div className="mt-auto pt-4">
           <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full ${statusColor} ${statusBgColor}`}>

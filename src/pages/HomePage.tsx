@@ -81,6 +81,7 @@ const HomePage: React.FC = () => {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+
             {people.length > 0 ? (
               people.map(person => <PersonCard key={person.id} person={person} />)
             ) : (

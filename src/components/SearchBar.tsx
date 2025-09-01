@@ -20,7 +20,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, onSearchChange, onSea
         value={searchTerm}
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder="Buscar por nome..."
-        className="flex-grow p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-blue-500"
+        className="text-white flex-grow p-2 rounded bg-[#555555] border border-gray-600 focus:outline-none focus:border-blue-500"
       />
       <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Buscar
