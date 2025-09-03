@@ -103,7 +103,7 @@ const DetailsPage: React.FC = () => {
             </button>
           </div>
         </div>
-        <div className="bg-gray-800 shadow-xl rounded-lg p-6">
+        <div className="bg-[#333333] text-white shadow-xl rounded-lg p-6">
           <h2 className="text-2xl font-bold mb-4 border-b border-gray-700 pb-2">Histórico de Informações</h2>
           {informationLogs.length > 0 ? (
             <div className="space-y-4">
