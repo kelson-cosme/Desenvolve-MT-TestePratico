@@ -4,6 +4,7 @@ import apiClient from '../api/axios.config';
 import InformationForm from '../components/InformationForm';
 import { formatDate } from '../utils/dateFormatter';
 import InformationLog, { type LogInfo } from '../components/InformationLog';
+import PlaceholderImage from '@/assets/logo.png'; // 1. Importar a imagem de placeholder
 
 interface PersonDetails {
   id: number;
@@ -31,6 +32,9 @@ const DetailsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
+  
+  // 2. Criar estado para a imagem
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDetailsAndLogs = async () => {
@@ -38,7 +42,8 @@ const DetailsPage: React.FC = () => {
         setLoading(true);
         const personResponse = await apiClient.get<PersonDetails>(`/pessoas/${id}`);
         setPerson(personResponse.data);
-        
+        setImageSrc(personResponse.data.urlFoto); // 3. Definir a imagem inicial no estado
+
         const ocorrenciaId = personResponse.data.ultimaOcorrencia.ocoId;
         if (ocorrenciaId) {
           const logsResponse = await apiClient.get<LogInfo[]>(`/ocorrencias/informacoes-desaparecido`, {
@@ -59,7 +64,8 @@ const DetailsPage: React.FC = () => {
       fetchDetailsAndLogs();
     }
   }, [id]);
-
+  
+  // ... (lógica de loading, status, etc., continua a mesma) ...
   if (loading) { return <div className="text-center mt-10">Carregando detalhes...</div>; }
   if (error) { return <div className="text-center mt-10 text-red-500">{error}</div>; }
   if (!person) { return <div className="text-center mt-10">Pessoa não encontrada.</div>; }
@@ -72,6 +78,7 @@ const DetailsPage: React.FC = () => {
   
   const vestimentas = person.ultimaOcorrencia?.ocorrenciaEntrevDesapDTO?.vestimentasDesaparecido;
 
+
   return (
     <>
       <div className="container mx-auto p-4 max-w-4xl">
@@ -80,7 +87,13 @@ const DetailsPage: React.FC = () => {
         </button>
 
         <div className="bg-[#333333] shadow-xl rounded-lg overflow-hidden md:flex mb-8">
-           <img className="md:w-1/3 w-full h-auto object-cover" src={person.urlFoto} alt={person.nome} />
+           {/* 4. Usar o estado e o onError na imagem */}
+           <img 
+             className="md:w-1/3 w-full h-auto object-cover" 
+             src={imageSrc || PlaceholderImage} 
+             alt={person.nome}
+             onError={() => setImageSrc(PlaceholderImage)}
+           />
           <div className="p-6 md:w-2/3">
             <div className="flex justify-between items-start">
               <h1 className="text-3xl font-bold text-white mb-2">{person.nome}</h1>

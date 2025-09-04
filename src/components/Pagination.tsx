@@ -1,4 +1,5 @@
 import React from 'react';
+import { usePagination } from '@/hooks/usePagination';
 
 interface PaginationProps {
   currentPage: number;
@@ -7,37 +8,74 @@ interface PaginationProps {
 }
 
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
-  const pages = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push(i);
+  const paginationRange = usePagination({
+    currentPage,
+    totalPages,
+    siblingCount: 1,
+  });
+
+  if (currentPage === 0 || paginationRange.length < 2) {
+    return null;
   }
 
+  const onNext = () => {
+    onPageChange(currentPage + 1);
+  };
+
+  const onPrevious = () => {
+    onPageChange(currentPage - 1);
+  };
+
+  const lastPage = paginationRange[paginationRange.length - 1];
+
   return (
-    <div className="flex justify-center flex-wrap items-center my-8">
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="px-4 py-2 mx-1 bg-gray-700 rounded disabled:opacity-50"
-      >
-        Anterior
-      </button>
-      {pages.map(page => (
-        <button
-          key={page}
-          onClick={() => onPageChange(page)}
-          className={`px-4 py-2 mx-1 rounded m-2 ${currentPage === page ? 'bg-blue-600' : 'bg-gray-700'}`}
-        >
-          {page}
-        </button>
-      ))}
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="px-4 py-2 mx-1 bg-gray-700 rounded disabled:opacity-50"
-      >
-        Próxima
-      </button>
-    </div>
+    <nav>
+      <ul className="flex justify-center items-center my-8 space-x-2">
+        {/* Botão Anterior */}
+        <li>
+          <button
+            onClick={onPrevious}
+            disabled={currentPage === 1}
+            className="px-4 py-2 rounded-lg bg-[#333333] text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+          >
+            Anterior
+          </button>
+        </li>
+        
+        {/* Números da Página */}
+        {paginationRange.map((pageNumber, index) => {
+          if (pageNumber === '...') {
+            return <li key={index} className="px-4 py-2 text-gray-400">...</li>;
+          }
+
+          return (
+            <li key={index}>
+              <button
+                onClick={() => onPageChange(pageNumber as number)}
+                className={`px-4 py-2 rounded-lg transition duration-200 ${
+                  currentPage === pageNumber
+                    ? 'bg-blue-600 text-white font-bold'
+                    : 'bg-[#333333] text-white hover:bg-blue-600'
+                }`}
+              >
+                {pageNumber}
+              </button>
+            </li>
+          );
+        })}
+
+        {/* Botão Próximo */}
+        <li>
+          <button
+            onClick={onNext}
+            disabled={currentPage === lastPage}
+            className="px-4 py-2 rounded-lg bg-[#333333] text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+          >
+            Próxima
+          </button>
+        </li>
+      </ul>
+    </nav>
   );
 };
 
