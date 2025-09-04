@@ -2,11 +2,16 @@ export const formatDate = (dateString: string | null): string => {
   if (!dateString) {
     return 'Data não informada';
   }
-  const date = new Date(dateString);
-  // Verifica se a data é válida
-  if (isNaN(date.getTime())) {
+
+  const datePart = dateString.split('T')[0];
+  
+  const parts = datePart.split('-');
+
+  if (parts.length !== 3) {
     return 'Data inválida';
   }
-  // Correção do nome da função
-  return date.toLocaleDateString('pt-BR');
+
+  const [year, month, day] = parts;
+
+  return `${day}/${month}/${year}`;
 };

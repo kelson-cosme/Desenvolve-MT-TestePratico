@@ -30,8 +30,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
 
   return (
     <nav>
-      <ul className="flex justify-center items-center my-8 space-x-2">
-        {/* Botão Anterior */}
+      <ul className="flex justify-center items-center my-8 space-x-2 flex-wrap">
         <li>
           <button
             onClick={onPrevious}
@@ -42,7 +41,6 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           </button>
         </li>
         
-        {/* Números da Página */}
         {paginationRange.map((pageNumber, index) => {
           if (pageNumber === '...') {
             return <li key={index} className="px-4 py-2 text-gray-400">...</li>;
@@ -64,7 +62,6 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           );
         })}
 
-        {/* Botão Próximo */}
         <li>
           <button
             onClick={onNext}

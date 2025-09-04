@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-// Objeto que define a estrutura dos nossos filtros
 export interface Filters {
   nome: string;
   idadeInicial: string;
@@ -17,7 +16,6 @@ interface FilterBarProps {
 const FilterBar: React.FC<FilterBarProps> = ({ initialFilters, onSearchSubmit }) => {
   const [filters, setFilters] = useState<Filters>(initialFilters);
 
-  // Sincroniza o estado interno se os filtros da URL mudarem
   useEffect(() => {
     setFilters(initialFilters);
   }, [initialFilters]);
@@ -41,7 +39,6 @@ const FilterBar: React.FC<FilterBarProps> = ({ initialFilters, onSearchSubmit })
   return (
     <form onSubmit={handleFormSubmit} className="p-4 bg-[#333333] rounded-lg mb-8 space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Nome */}
         <input
           type="text"
           name="nome"
@@ -50,19 +47,19 @@ const FilterBar: React.FC<FilterBarProps> = ({ initialFilters, onSearchSubmit })
           placeholder="Buscar por nome..."
           className="w-full p-2 rounded bg-[#555555] border border-gray-600 text-white"
         />
-        {/* Sexo */}
+
         <select name="sexo" value={filters.sexo} onChange={handleChange} className="w-full p-2 rounded bg-[#555555] border border-gray-600 text-white">
           <option value="">Todos os Sexos</option>
           <option value="MASCULINO">Masculino</option>
           <option value="FEMININO">Feminino</option>
         </select>
-        {/* Status */}
+
         <select name="status" value={filters.status} onChange={handleChange} className="w-full p-2 rounded bg-[#555555] border border-gray-600 text-white">
           <option value="">Todos os Status</option>
           <option value="DESAPARECIDO">Desaparecido</option>
           <option value="LOCALIZADO">Localizado</option>
         </select>
-        {/* Faixa Etária */}
+
         <div className="flex items-center gap-2">
           <input
             type="number"

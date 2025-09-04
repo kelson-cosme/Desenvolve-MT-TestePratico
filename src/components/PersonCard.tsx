@@ -30,7 +30,6 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, forcedStatus }) => {
 
   const local = person.ultimaOcorrencia?.localDesaparecimentoConcat || 'Local não informado';
   
-  // Lógica de data aprimorada
   const dateText = isMissing ? 'Em:' : 'Localizado(a) em:';
   const dateToShow = isMissing 
     ? person.ultimaOcorrencia?.dtDesaparecimento 
@@ -56,7 +55,6 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, forcedStatus }) => {
           {isMissing ? 'Visto por último em:' : 'Local:'} {local}
         </p>
         
-        {/* Usando a data e o texto corretos */}
         <p className="text-gray-300 text-sm">{dateText} {formatDate(dateToShow)}</p>
 
         <div className="mt-auto pt-4">

@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import apiClient from '../api/axios.config';
 import PersonCard from '../components/PersonCard';
 import Pagination from '../components/Pagination';
-import FilterBar, { type Filters } from '../components/FilterBar'; // Importando o novo componente
+import FilterBar, { type Filters } from '../components/FilterBar'; 
 import { type Person } from '@/types/person';
 
 interface PaginatedResponse {
@@ -18,7 +18,6 @@ const HomePage: React.FC = () => {
   
   const [searchParams, setSearchParams] = useSearchParams();
   
-  // Lendo todos os filtros da URL
   const initialFilters: Filters = {
     nome: searchParams.get('nome') || '',
     idadeInicial: searchParams.get('faixaIdadeInicial') || '',
@@ -31,7 +30,6 @@ const HomePage: React.FC = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     
-    // Montando os parâmetros dinamicamente para a API
     const params: { [key: string]: any } = {
       pagina: currentPage - 1,
       porPagina: 10,
@@ -53,8 +51,7 @@ const HomePage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [searchParams]); // Depender de searchParams para refazer a busca
-
+  }, [searchParams]); 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -89,8 +86,6 @@ const HomePage: React.FC = () => {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {people.length > 0 ? (
-              // --- ALTERAÇÃO AQUI ---
-              // Passando o status do filtro para cada card
               people.map(person => (
                 <PersonCard 
                   key={person.id} 

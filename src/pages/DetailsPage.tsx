@@ -4,7 +4,7 @@ import apiClient from '../api/axios.config';
 import InformationForm from '../components/InformationForm';
 import { formatDate } from '../utils/dateFormatter';
 import InformationLog, { type LogInfo } from '../components/InformationLog';
-import PlaceholderImage from '@/assets/logo.png'; // 1. Importar a imagem de placeholder
+import PlaceholderImage from '@/assets/logo.png'; 
 
 interface PersonDetails {
   id: number;
@@ -33,7 +33,6 @@ const DetailsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   
-  // 2. Criar estado para a imagem
   const [imageSrc, setImageSrc] = useState<string | null>(null);
 
   useEffect(() => {
@@ -42,7 +41,7 @@ const DetailsPage: React.FC = () => {
         setLoading(true);
         const personResponse = await apiClient.get<PersonDetails>(`/pessoas/${id}`);
         setPerson(personResponse.data);
-        setImageSrc(personResponse.data.urlFoto); // 3. Definir a imagem inicial no estado
+        setImageSrc(personResponse.data.urlFoto); 
 
         const ocorrenciaId = personResponse.data.ultimaOcorrencia.ocoId;
         if (ocorrenciaId) {
@@ -65,7 +64,6 @@ const DetailsPage: React.FC = () => {
     }
   }, [id]);
   
-  // ... (lógica de loading, status, etc., continua a mesma) ...
   if (loading) { return <div className="text-center mt-10">Carregando detalhes...</div>; }
   if (error) { return <div className="text-center mt-10 text-red-500">{error}</div>; }
   if (!person) { return <div className="text-center mt-10">Pessoa não encontrada.</div>; }
@@ -87,7 +85,6 @@ const DetailsPage: React.FC = () => {
         </button>
 
         <div className="bg-[#333333] shadow-xl rounded-lg overflow-hidden md:flex mb-8">
-           {/* 4. Usar o estado e o onError na imagem */}
            <img 
              className="md:w-1/3 w-full h-auto object-cover" 
              src={imageSrc || PlaceholderImage} 

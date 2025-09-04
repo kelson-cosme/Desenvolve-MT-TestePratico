@@ -1,7 +1,6 @@
 import React from 'react';
 import { formatDate } from '../utils/dateFormatter';
 
-// A palavra 'export' aqui é a correção crucial
 export interface LogInfo {
   id: number;
   informacao: string;
@@ -15,7 +14,7 @@ interface InformationLogProps {
 
 const InformationLog: React.FC<InformationLogProps> = ({ log }) => {
   return (
-    <div className="bg-gray-700 p-4 rounded-lg border border-gray-600">
+    <div className="bg-[#44444467] p-4 rounded-lg border text-white border-gray-600">
       <p className="text-gray-300 mb-2">{log.informacao}</p>
       <p className="text-sm text-gray-400 mb-4">
         Data da informação: {formatDate(log.data)}
