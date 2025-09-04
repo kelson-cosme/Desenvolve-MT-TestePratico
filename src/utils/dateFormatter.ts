@@ -1,4 +1,4 @@
-export const formatDate = (dateString: string): string => {
+export const formatDate = (dateString: string | null): string => {
   if (!dateString) {
     return 'Data não informada';
   }
@@ -7,5 +7,6 @@ export const formatDate = (dateString: string): string => {
   if (isNaN(date.getTime())) {
     return 'Data inválida';
   }
+  // Correção do nome da função
   return date.toLocaleDateString('pt-BR');
 };

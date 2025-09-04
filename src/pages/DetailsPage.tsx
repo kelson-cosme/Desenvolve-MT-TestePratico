@@ -5,7 +5,6 @@ import InformationForm from '../components/InformationForm';
 import { formatDate } from '../utils/dateFormatter';
 import InformationLog, { type LogInfo } from '../components/InformationLog';
 
-// Interface corrigida para incluir 'dataLocalizacao'
 interface PersonDetails {
   id: number;
   nome: string;
@@ -16,13 +15,13 @@ interface PersonDetails {
     ocoId: number;
     dtDesaparecimento: string;
     localDesaparecimentoConcat: string;
-    dataLocalizacao: string | null; // Campo chave para o status
+    dataLocalizacao: string | null;
+    encontradoVivo: boolean | null;
     ocorrenciaEntrevDesapDTO?: {
       vestimentasDesaparecido?: string;
     };
   };
 }
-
 
 const DetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,7 +32,7 @@ const DetailsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchDetailsAndLogs = async () => {
       try {
         setLoading(true);
@@ -43,13 +42,10 @@ const DetailsPage: React.FC = () => {
         const ocorrenciaId = personResponse.data.ultimaOcorrencia.ocoId;
         if (ocorrenciaId) {
           const logsResponse = await apiClient.get<LogInfo[]>(`/ocorrencias/informacoes-desaparecido`, {
-            params: {
-              ocorrenciaId: ocorrenciaId
-            }
+            params: { ocorrenciaId }
           });
           setInformationLogs(logsResponse.data);
         }
-
         setError(null);
       } catch (err) {
         setError("Não foi possível carregar os dados.");
@@ -68,17 +64,13 @@ const DetailsPage: React.FC = () => {
   if (error) { return <div className="text-center mt-10 text-red-500">{error}</div>; }
   if (!person) { return <div className="text-center mt-10">Pessoa não encontrada.</div>; }
 
-  // --- INÍCIO DA CORREÇÃO ---
-  // Lógica dinâmica para o status baseada em 'dataLocalizacao'
   const isMissing = person.ultimaOcorrencia.dataLocalizacao === null;
   const statusText = isMissing ? 'DESAPARECIDO' : 'LOCALIZADO';
   const statusClasses = isMissing 
     ? 'bg-yellow-500 text-black font-bold py-1 px-3 rounded' 
     : 'bg-green-500 text-white font-bold py-1 px-3 rounded';
-  // --- FIM DA CORREÇÃO ---
   
   const vestimentas = person.ultimaOcorrencia?.ocorrenciaEntrevDesapDTO?.vestimentasDesaparecido;
-
 
   return (
     <>
@@ -92,24 +84,40 @@ const DetailsPage: React.FC = () => {
           <div className="p-6 md:w-2/3">
             <div className="flex justify-between items-start">
               <h1 className="text-3xl font-bold text-white mb-2">{person.nome}</h1>
-              {/* Usando as variáveis dinâmicas */}
               <span className={statusClasses}>{statusText}</span>
             </div>
             <p className="text-gray-300 text-lg mb-4">{person.idade} anos</p>
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <div><strong className="font-semibold text-white">Sexo:</strong> <p className='text-white'>{person.sexo}</p></div>
-              <div><strong className="font-semibold text-white">Desaparecimento:</strong><p className='text-white'>{formatDate(person.ultimaOcorrencia?.dtDesaparecimento)}</p> </div>
-              <div className="col-span-2"><strong className="font-semibold text-white">Local:</strong> <p className='text-white'>{person.ultimaOcorrencia?.localDesaparecimentoConcat}</p> </div>
+              
+              {isMissing ? (
+                <>
+                  <div><strong className="font-semibold text-white">Desaparecimento:</strong><p className='text-white'>{formatDate(person.ultimaOcorrencia?.dtDesaparecimento)}</p> </div>
+                  <div className="col-span-2"><strong className="font-semibold text-white">Último local visto:</strong> <p className='text-white'>{person.ultimaOcorrencia?.localDesaparecimentoConcat}</p> </div>
+                </>
+              ) : (
+                <>
+                  <div><strong className="font-semibold text-white">Data da Localização:</strong><p className='text-white'>{formatDate(person.ultimaOcorrencia?.dataLocalizacao)}</p> </div>
+                  <div><strong className="font-semibold text-white">Situação:</strong><p className='text-white'>{person.ultimaOcorrencia.encontradoVivo ? 'Encontrado(a) com vida' : 'Não informado'}</p> </div>
+                  <div className="col-span-2"><strong className="font-semibold text-white">Local:</strong> <p className='text-white'>{person.ultimaOcorrencia?.localDesaparecimentoConcat}</p> </div>
+                </>
+              )}
             </div>
+
             <div className="mb-6">
               <h3 className="font-semibold text-white border-b border-gray-600 pb-2 mb-2">Vestimentas</h3>
               <p className="text-gray-300">{vestimentas || 'Nenhuma informação registrada.'}</p>
             </div>
-            <button onClick={() => setIsFormVisible(true)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded transition duration-300">
-              Enviar Informações Adicionais
-            </button>
+            
+            {isMissing && (
+              <button onClick={() => setIsFormVisible(true)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded transition duration-300">
+                Enviar Informações Adicionais
+              </button>
+            )}
           </div>
         </div>
+        
         <div className="bg-[#333333] text-white shadow-xl rounded-lg p-6">
           <h2 className="text-2xl font-bold mb-4 border-b border-gray-700 pb-2">Histórico de Informações</h2>
           {informationLogs.length > 0 ? (
@@ -123,6 +131,7 @@ const DetailsPage: React.FC = () => {
           )}
         </div>
       </div>
+
       {isFormVisible && <InformationForm ocorrenciaId={person.ultimaOcorrencia.ocoId} onClose={() => setIsFormVisible(false)} />}
     </>
   );

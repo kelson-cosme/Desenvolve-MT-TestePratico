@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'; // 1. Importar useState e useEffect
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { formatDate } from '../utils/dateFormatter';
 import { type Person } from '@/types/person';
-import PlaceholderImage from '@/assets/logo.png'; 
+import PlaceholderImage from '@/assets/logo.png';
 
 interface PersonCardProps {
   person: Person;
@@ -10,11 +10,8 @@ interface PersonCardProps {
 }
 
 const PersonCard: React.FC<PersonCardProps> = ({ person, forcedStatus }) => {
-
-  // 2. Criar um estado para controlar a URL da imagem
   const [imageSrc, setImageSrc] = useState(person.urlFoto);
 
-  // 3. Garantir que a imagem seja atualizada se o card for reutilizado para outra pessoa
   useEffect(() => {
     setImageSrc(person.urlFoto);
   }, [person.urlFoto]);
@@ -32,6 +29,12 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, forcedStatus }) => {
   const statusBgColor = isMissing ? 'bg-yellow-500/20' : 'bg-green-500/20';
 
   const local = person.ultimaOcorrencia?.localDesaparecimentoConcat || 'Local não informado';
+  
+  // Lógica de data aprimorada
+  const dateText = isMissing ? 'Em:' : 'Localizado(a) em:';
+  const dateToShow = isMissing 
+    ? person.ultimaOcorrencia?.dtDesaparecimento 
+    : person.ultimaOcorrencia?.dataLocalizacao;
 
   return (
     <Link 
@@ -41,9 +44,8 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, forcedStatus }) => {
       <div className="overflow-hidden">
         <img 
           className="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-300" 
-          src={imageSrc || PlaceholderImage} // 4. Usar o estado e um fallback extra
+          src={imageSrc || PlaceholderImage}
           alt={person.nome} 
-          // 5. O onError agora atualiza o estado, forçando uma nova renderização
           onError={() => { setImageSrc(PlaceholderImage); }}
         />
       </div>
@@ -51,10 +53,11 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, forcedStatus }) => {
         <h3 className="text-lg font-bold text-white mb-2 truncate">{person.nome}</h3>
         <p className="text-gray-300 text-sm mb-3">{person.idade} anos</p>
         <p className="text-gray-300 text-sm mb-4">
-          Visto por último em: {local}
+          {isMissing ? 'Visto por último em:' : 'Local:'} {local}
         </p>
         
-        <p className="text-gray-300 text-sm">Em: {formatDate(person.ultimaOcorrencia?.dtDesaparecimento)}</p>
+        {/* Usando a data e o texto corretos */}
+        <p className="text-gray-300 text-sm">{dateText} {formatDate(dateToShow)}</p>
 
         <div className="mt-auto pt-4">
           <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full ${statusColor} ${statusBgColor}`}>

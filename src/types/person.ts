@@ -3,9 +3,11 @@ export interface Person {
   nome: string;
   urlFoto: string;
   idade: number;
+  status: 'DESAPARECIDO' | 'LOCALIZADO';
   ultimaOcorrencia: {
     dtDesaparecimento: string;
     localDesaparecimentoConcat: string;
-    dataLocalizacao: string | null; // Adicionamos este campo
+    dataLocalizacao: string | null; // Adicionado
+    encontradoVivo: boolean | null;   // Adicionado
   };
 }
