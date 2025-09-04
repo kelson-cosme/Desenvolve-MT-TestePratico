@@ -85,8 +85,8 @@ const HomePage: React.FC = () => {
             {people.length > 0 ? (
               people.map(person => <PersonCard key={person.id} person={person} />)
             ) : (
-              <div className="col-span-full text-center py-10 bg-gray-800 rounded-lg">
-                <p className="text-lg text-gray-400">Nenhum resultado encontrado para "{submittedSearch}".</p>
+              <div className="col-span-full text-center py-10 bg-[#555555] rounded-lg">
+                <p className="text-lg text-white">Nenhum resultado encontrado para "{submittedSearch}".</p>
               </div>
             )}
           </div>
