@@ -1,0 +1,19 @@
+# Dependências
+node_modules
+
+# Arquivos de build
+dist
+dist-ssr
+
+# Logs
+logs
+*.log
+
+# Arquivos de ambiente
+.env
+.env.*
+*.local
+
+# Outros
+.git
+.vscode
