@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom'; // 1. Importar useSearchParams
+import { useSearchParams } from 'react-router-dom';
 import apiClient from '../api/axios.config';
 import PersonCard from '../components/PersonCard';
 import Pagination from '../components/Pagination';
-import SearchBar from '../components/SearchBar';
+import FilterBar, { type Filters } from '../components/FilterBar'; // Importando o novo componente
 import { type Person } from '@/types/person';
 
 interface PaginatedResponse {
@@ -15,25 +15,32 @@ const HomePage: React.FC = () => {
   const [people, setPeople] = useState<Person[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
   
-  // 2. Usar useSearchParams para controlar o estado da página e da busca
   const [searchParams, setSearchParams] = useSearchParams();
   
-  // Lemos os valores da URL ou usamos um valor padrão
+  // Lendo todos os filtros da URL
+  const initialFilters: Filters = {
+    nome: searchParams.get('nome') || '',
+    idadeInicial: searchParams.get('faixaIdadeInicial') || '',
+    idadeFinal: searchParams.get('faixaIdadeFinal') || '',
+    sexo: searchParams.get('sexo') || '',
+    status: searchParams.get('status') || '',
+  };
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
-  const submittedSearch = searchParams.get('nome') || '';
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     
-    const params = {
-      nome: submittedSearch,
-      pagina: currentPage - 1, // API espera base 0
+    // Montando os parâmetros dinamicamente para a API
+    const params: { [key: string]: any } = {
+      pagina: currentPage - 1,
       porPagina: 10,
-      faixaIdadeInicial: 0,
-      faixaIdadeFinal: 120
     };
+    if (initialFilters.nome) params.nome = initialFilters.nome;
+    if (initialFilters.idadeInicial) params.faixaIdadeInicial = initialFilters.idadeInicial;
+    if (initialFilters.idadeFinal) params.faixaIdadeFinal = initialFilters.idadeFinal;
+    if (initialFilters.sexo) params.sexo = initialFilters.sexo;
+    if (initialFilters.status) params.status = initialFilters.status;
 
     try {
       const response = await apiClient.get<PaginatedResponse>('/pessoas/aberto/filtro', { params });
@@ -46,33 +53,33 @@ const HomePage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, submittedSearch]);
+  }, [searchParams]); // Depender de searchParams para refazer a busca
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  const handleSearchSubmit = () => {
-    // 3. Ao buscar, atualizamos a URL. Isso dispara a refetch.
-    setSearchParams({ nome: searchTerm, page: '1' });
+  const handleSearchSubmit = (filters: Filters) => {
+    const newParams: { [key: string]: string } = { page: '1' };
+    
+    if (filters.nome) newParams.nome = filters.nome;
+    if (filters.idadeInicial) newParams.faixaIdadeInicial = filters.idadeInicial;
+    if (filters.idadeFinal) newParams.faixaIdadeFinal = filters.idadeFinal;
+    if (filters.sexo) newParams.sexo = filters.sexo;
+    if (filters.status) newParams.status = filters.status;
+    
+    setSearchParams(newParams);
   };
 
   const handlePageChange = (page: number) => {
-    // 4. Ao mudar de página, atualizamos a URL.
-    setSearchParams({ nome: submittedSearch, page: page.toString() });
+    const currentParams = Object.fromEntries(searchParams.entries());
+    setSearchParams({ ...currentParams, page: page.toString() });
   };
-  
-  // Sincroniza o input com o termo de busca na URL
-  useEffect(() => {
-    setSearchTerm(submittedSearch);
-  }, [submittedSearch]);
-
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-      <SearchBar
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
+      <FilterBar
+        initialFilters={initialFilters}
         onSearchSubmit={handleSearchSubmit}
       />
       
@@ -81,12 +88,19 @@ const HomePage: React.FC = () => {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-
             {people.length > 0 ? (
-              people.map(person => <PersonCard key={person.id} person={person} />)
+              // --- ALTERAÇÃO AQUI ---
+              // Passando o status do filtro para cada card
+              people.map(person => (
+                <PersonCard 
+                  key={person.id} 
+                  person={person} 
+                  forcedStatus={initialFilters.status} 
+                />
+              ))
             ) : (
-              <div className="col-span-full text-center py-10 bg-[#555555] rounded-lg">
-                <p className="text-lg text-white">Nenhum resultado encontrado para "{submittedSearch}".</p>
+              <div className="col-span-full text-center py-10 bg-[#333333] rounded-lg">
+                <p className="text-lg text-white">Nenhum resultado encontrado.</p>
               </div>
             )}
           </div>

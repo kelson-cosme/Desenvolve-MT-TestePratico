@@ -6,5 +6,6 @@ export interface Person {
   ultimaOcorrencia: {
     dtDesaparecimento: string;
     localDesaparecimentoConcat: string;
+    dataLocalizacao: string | null; // Adicionamos este campo
   };
 }

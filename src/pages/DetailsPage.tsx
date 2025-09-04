@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-// 1. Importar o 'useNavigate' em vez do 'Link'
 import { useParams, useNavigate } from 'react-router-dom';
 import apiClient from '../api/axios.config';
 import InformationForm from '../components/InformationForm';
 import { formatDate } from '../utils/dateFormatter';
 import InformationLog, { type LogInfo } from '../components/InformationLog';
 
-// ... (Interface PersonDetails continua a mesma)
+// Interface corrigida para incluir 'dataLocalizacao'
 interface PersonDetails {
   id: number;
   nome: string;
@@ -17,6 +16,7 @@ interface PersonDetails {
     ocoId: number;
     dtDesaparecimento: string;
     localDesaparecimentoConcat: string;
+    dataLocalizacao: string | null; // Campo chave para o status
     ocorrenciaEntrevDesapDTO?: {
       vestimentasDesaparecido?: string;
     };
@@ -26,7 +26,6 @@ interface PersonDetails {
 
 const DetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  // 2. Criar a função de navegação
   const navigate = useNavigate();
   const [person, setPerson] = useState<PersonDetails | null>(null);
   const [informationLogs, setInformationLogs] = useState<LogInfo[]>([]);
@@ -34,7 +33,6 @@ const DetailsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
-  // ... (useEffect e outras lógicas continuam as mesmas)
     useEffect(() => {
     const fetchDetailsAndLogs = async () => {
       try {
@@ -70,7 +68,15 @@ const DetailsPage: React.FC = () => {
   if (error) { return <div className="text-center mt-10 text-red-500">{error}</div>; }
   if (!person) { return <div className="text-center mt-10">Pessoa não encontrada.</div>; }
 
-  const statusClasses = 'bg-red-500 text-white font-bold py-1 px-3 rounded';
+  // --- INÍCIO DA CORREÇÃO ---
+  // Lógica dinâmica para o status baseada em 'dataLocalizacao'
+  const isMissing = person.ultimaOcorrencia.dataLocalizacao === null;
+  const statusText = isMissing ? 'DESAPARECIDO' : 'LOCALIZADO';
+  const statusClasses = isMissing 
+    ? 'bg-yellow-500 text-black font-bold py-1 px-3 rounded' 
+    : 'bg-green-500 text-white font-bold py-1 px-3 rounded';
+  // --- FIM DA CORREÇÃO ---
+  
   const vestimentas = person.ultimaOcorrencia?.ocorrenciaEntrevDesapDTO?.vestimentasDesaparecido;
 
 
@@ -86,7 +92,8 @@ const DetailsPage: React.FC = () => {
           <div className="p-6 md:w-2/3">
             <div className="flex justify-between items-start">
               <h1 className="text-3xl font-bold text-white mb-2">{person.nome}</h1>
-              <span className={statusClasses}>DESAPARECIDO</span>
+              {/* Usando as variáveis dinâmicas */}
+              <span className={statusClasses}>{statusText}</span>
             </div>
             <p className="text-gray-300 text-lg mb-4">{person.idade} anos</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
