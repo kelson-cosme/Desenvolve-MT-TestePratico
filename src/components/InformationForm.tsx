@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import apiClient from '../api/axios.config';
+import { toast } from 'react-hot-toast'; 
 
 interface InformationFormProps {
   ocorrenciaId: number;
@@ -43,11 +44,11 @@ const InformationForm: React.FC<InformationFormProps> = ({ ocorrenciaId, onClose
           'Content-Type': 'multipart/form-data',
         },
       });
-      alert('Informações enviadas com sucesso!');
+      toast.success('Informações enviadas com sucesso!');
       onClose();
     } catch (error) {
       console.error('Erro ao enviar informações:', error);
-      alert('Falha ao enviar informações. Tente novamente.');
+      toast.error('Falha ao enviar informações. Tente novamente.'); 
     } finally {
       setIsSubmitting(false);
     }
