@@ -57,7 +57,7 @@ Existem duas maneiras de executar este projeto: localmente para desenvolvimento 
 
 4.  **Acesse a aplicação:** Abra seu navegador e acesse `http://localhost:5173` (ou a porta indicada no seu terminal).
 
-### 2. Execução com Docker
+# 2. Execução com Docker
 
 **Pré-requisitos:**
 - [Docker](https://www.docker.com/products/docker-desktop/) instalado e em execução.
