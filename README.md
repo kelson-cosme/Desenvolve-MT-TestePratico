@@ -109,4 +109,4 @@ Para garantir que todas as funcionalidades estão operando corretamente, siga os
 
 - **Nome Completo:** Kelson Cosme de Almeida
 - **E-mail:** Kelson.almeida123@gmail.com
-- **Inscrição:** 
+- **Telefone para contato:** (65) 99664-6289
