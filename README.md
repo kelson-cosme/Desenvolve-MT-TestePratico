@@ -1,7 +1,7 @@
 # Consulta de Pessoas Desaparecidas - PJC-MT
 Este projeto é uma Single Page Application (SPA) desenvolvida como parte de um desafio prático. A aplicação consome a API da Polícia Judiciária Civil de Mato Grosso para permitir que cidadãos consultem registros de pessoas desaparecidas e enviem informações adicionais que possam auxiliar na localização.
 
-<img style:"border-radius: 50px" width="1902" height="924" alt="image" src="https://github.com/user-attachments/assets/38e2b8aa-7c7c-48ff-9e51-5ced64983aa0" />
+<img width="1902" height="924" alt="image" src="https://github.com/user-attachments/assets/38e2b8aa-7c7c-48ff-9e51-5ced64983aa0" />
 
 ## Funcionalidades
 
