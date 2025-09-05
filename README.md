@@ -1,16 +1,18 @@
 # Consulta de Pessoas Desaparecidas - PJC-MT
 Este projeto é uma Single Page Application (SPA) desenvolvida como parte de um desafio prático. A aplicação consome a API da Polícia Judiciária Civil de Mato Grosso para permitir que cidadãos consultem registros de pessoas desaparecidas e enviem informações adicionais que possam auxiliar na localização.
 
-<img width="1902" height="924" alt="image" src="https://github.com/user-attachments/assets/38e2b8aa-7c7c-48ff-9e51-5ced64983aa0" />
+<img style:"border-radius: 50px" width="1902" height="924" alt="image" src="https://github.com/user-attachments/assets/38e2b8aa-7c7c-48ff-9e51-5ced64983aa0" />
 
 ## Funcionalidades
 
 - **Listagem e Paginação:** Visualização dos registros de pessoas desaparecidas em formato de cards, com paginação para navegar entre os resultados.
-- **Busca Dinâmica:** Campo de busca para filtrar pessoas por nome.
+- **Busca e Filtragem Avançada:** Painel de filtros completo para buscar por nome, status (desaparecido/localizado), sexo e faixa etária.
 - **Detalhes do Registro:** Visualização completa dos dados de uma pessoa, incluindo um histórico de informações e avistamentos já registrados.
 - **Envio de Informações:** Formulário para que o cidadão possa enviar novas informações sobre uma pessoa, incluindo data, local, observações e anexos de fotos.
 - **Responsividade:** Layout adaptável para diferentes tamanhos de tela, de dispositivos móveis a desktops.
-
+- **Efeito de Skeleton Loading:** para uma melhor percepção de velocidade durante o carregamento dos dados.
+- **Notificações toast:**  para feedback de ações, melhorando a experiência do usuário.
+  
 ## Tecnologias Utilizadas
 
 - **Vite:** Build tool para desenvolvimento frontend moderno e rápido.
@@ -19,6 +21,7 @@ Este projeto é uma Single Page Application (SPA) desenvolvida como parte de um 
 - **Tailwind CSS:** Framework CSS utility-first para estilização rápida e responsiva.
 - **React Router DOM:** Para gerenciamento de rotas e navegação na SPA.
 - **Axios:** Cliente HTTP para realizar as requisições à API.
+- React Hot Toast: Para notificações "toast" elegantes.
 - **React IMask:** Para aplicação de máscaras em campos de formulário.
 - **Docker:** Para containerização da aplicação, garantindo um ambiente de execução consistente.
 
